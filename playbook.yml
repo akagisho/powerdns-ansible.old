@@ -1,0 +1,9 @@
+- hosts: master
+  sudo: yes
+  tasks:
+    - name: apt-get update
+      apt: update_cache=yes
+    - name: install mysql
+      apt: name=mysql-server,mysql-client
+    - name: install PowerDNS
+      apt: name=pdns-server,pdns-backend-mysql
