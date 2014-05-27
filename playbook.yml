@@ -3,13 +3,64 @@
   tasks:
     - name: apt-get update
       apt: update_cache=yes
-    - name: install mysql
+    - name: install depences
       apt: pkg={{ item }}
       with_items:
         - mysql-server
         - mysql-client
-    - name: install PowerDNS
-      apt: pkg={{ item }}
-      with_items:
         - pdns-server
         - pdns-backend-mysql
+        - ruby1.9.3
+        - rubygems
+        - libxml2-dev
+        - libxslt-dev
+        - libmysqlclient-dev
+        - git
+    - name: copy PowerDNS config file
+      copy: src=powerdns/roles/master/files/pdns.conf
+            dest=/etc/powerdns/pdns.conf
+            mode=0600
+    - name: disable DNSSEC
+      shell: sed -i 's/^gmysql-dnssec=yes/gmysql-dnssec=no/' /etc/powerdns/pdns.d/pdns.local.gmysql
+    - name: reload PowerDNS
+      service: name=pdns state=reloaded
+    - name: uninstall ruby1.8
+      apt: pkg=ruby1.8 state=absent
+    - name: install bundler
+      shell: gem install bundler --no-ri --no-rdoc
+    - name: make www directory
+      file: path=/var/www state=directory
+    - name: clone powerdns-on-rails
+      git: repo=https://github.com/akagisho/powerdns-on-rails.git
+           dest=/var/www/powerdns-on-rails
+           version=revised
+    - name: copy database config file
+      copy: src=powerdns/roles/master/files/database.yml
+            dest=/var/www/powerdns-on-rails/config/database.yml
+    - name: install powerdns-on-rails
+      shell: chdir=/var/www/powerdns-on-rails
+        bundle install --path vendor/bundle --without test development
+        && bundle exec rake db:migrate RAILS_ENV=production
+        && bundle exec rake assets:precompile RAILS_ENV=production
+        && bundle exec rake db:seed RAILS_ENV=production
+        && bundle exec rake generate_secret_token
+    - name: check whether unicorn is running
+      shell: "[ -f /tmp/powerdns-on-rails.pid ] && echo 'running' || echo ''"
+      register: unicorn_is_running
+    - name: stop unicorn
+      shell: kill -INT `cat /tmp/powerdns-on-rails.pid`
+      when: (unicorn_is_running.stdout)
+    - name: start unicorn
+      shell: chdir=/var/www/powerdns-on-rails
+        bundle exec unicorn_rails -c config/unicorn.rb -E production -D
+    - name: install nginx
+      apt: pkg=nginx
+    - name: make log directory
+      file: path=/var/log/powerdns-on-rails state=directory
+    - name: remove nginx default config file
+      file: path=/etc/nginx/sites-enabled/default state=absent
+    - name: copy nginx config file
+      copy: src=powerdns/roles/master/files/powerdns-on-rails.conf
+            dest=/etc/nginx/conf.d/powerdns-on-rails.conf
+    - name: restart nginx
+      service: name=nginx state=restarted
