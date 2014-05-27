@@ -4,6 +4,12 @@
     - name: apt-get update
       apt: update_cache=yes
     - name: install mysql
-      apt: name=mysql-server,mysql-client
+      apt: pkg={{ item }}
+      with_items:
+        - mysql-server
+        - mysql-client
     - name: install PowerDNS
-      apt: name=pdns-server,pdns-backend-mysql
+      apt: pkg={{ item }}
+      with_items:
+        - pdns-server
+        - pdns-backend-mysql
