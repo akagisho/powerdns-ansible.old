@@ -1,0 +1,4 @@
+- name: add user
+  user: name=dnsops groups=sudo generate_ssh_key=yes
+- name: apt-get update
+  apt: update_cache=yes
