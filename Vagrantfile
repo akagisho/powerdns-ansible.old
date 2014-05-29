@@ -10,7 +10,20 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # please see the online documentation at vagrantup.com.
 
   # Every Vagrant virtual environment requires a box to build off of.
-  config.vm.box = "ubuntu-server-12.04-amd64"
+  config.vm.define :node1 do |node|
+    node.vm.box = "ubuntu-server-12.04-amd64"
+    node.vm.network :private_network, ip: "10.200.19.10"
+  end
+
+  config.vm.define :node2 do |node|
+    node.vm.box = "ubuntu-server-12.04-amd64"
+    node.vm.network :private_network, ip: "10.200.19.11"
+  end
+
+  config.vm.define :node3 do |node|
+    node.vm.box = "ubuntu-server-12.04-amd64"
+    node.vm.network :private_network, ip: "10.200.19.12"
+  end
 
   # The url from where the 'config.vm.box' box will be fetched if it
   # doesn't already exist on the user's system.
@@ -23,7 +36,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
-  config.vm.network :private_network, ip: "10.200.19.10"
+  # config.vm.network :private_network, ip: "10.200.19.10"
 
   # Create a public network, which generally matched to bridged network.
   # Bridged networks make the machine appear as another physical device on

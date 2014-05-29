@@ -1,6 +1,8 @@
 - hosts: master
   sudo: yes
   tasks:
+    - name: add user
+      user: name=dnsops groups=sudo generate_ssh_key=yes
     - name: apt-get update
       apt: update_cache=yes
     - name: install depences
@@ -64,3 +66,30 @@
             dest=/etc/nginx/conf.d/powerdns-on-rails.conf
     - name: restart nginx
       service: name=nginx state=restarted
+
+- hosts: slave
+  sudo: yes
+  tasks:
+    - name: add user
+      user: name=dnsops groups=sudo generate_ssh_key=yes
+    - name: apt-get update
+      apt: update_cache=yes
+    - name: install depences
+      apt: pkg={{ item }}
+      with_items:
+        - bind9
+        - daemontools
+    - name: copy bind9 config file
+      copy: src=powerdns/roles/slave/files/named.conf.options
+            dest=/etc/bind/named.conf.options
+    - name: make zones directory
+      file: path=/var/cache/bind/slave state=directory
+            owner=bind
+    - name: reload bind9
+      service: name=bind9 state=reloaded
+    - name: get publickey
+      shell: cat /home/dnsops/.ssh/id_rsa.pub
+      register: slave_publickey
+    - name: set publickey to master
+      shell: echo '{{ slave_publickey.stdout }}' >> /home/dnsops/.ssh/authorized_keys
+      delegate_to: 10.200.19.10
