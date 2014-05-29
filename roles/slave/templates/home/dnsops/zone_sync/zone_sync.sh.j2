@@ -1,0 +1,25 @@
+#!/bin/sh
+
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+MASTER_HOST={{ master }}
+MASTER_USER={{ opsuser }}
+
+set -e
+
+DIR=$(cd $(dirname $0); pwd)
+TEMP=$(mktemp $DIR/.slave_zones.txt.XXXXX)
+
+scp -p -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no \
+    -i /home/$MASTER_USER/.ssh/id_rsa \
+    $MASTER_USER@$MASTER_HOST:zone_sync/master_zones.txt $DIR
+cat /var/cache/bind/3bf305731dd26307.nzf | awk '{print $2}' | sort > $TEMP \
+    && mv $TEMP $DIR/slave_zones.txt
+
+for i in $(diff $DIR/master_zones.txt $DIR/slave_zones.txt | grep '^<' | awk '{print $2}'); do
+    rndc addzone $i "{type slave; file \"slave/$i.db\"; masters {$MASTER_HOST;};};" || :
+done
+
+for i in $(diff $DIR/master_zones.txt $DIR/slave_zones.txt | grep '^>' | awk '{print $2}'); do
+    rndc delzone $i || :
+done

@@ -17,3 +17,11 @@
 - name: set publickey to master
   shell: echo '{{ slave_publickey.stdout }}' >> /home/{{ opsuser }}/.ssh/authorized_keys
   delegate_to: "{{ master }}"
+- name: copy zone_sync.sh
+  template: src=home/dnsops/zone_sync/zone_sync.sh.j2
+            dest=/home/{{ opsuser }}/zone_sync/zone_sync.sh
+            owner=dnsops mode=0755
+- name: add zone_sync.sh to cron
+  cron: name="zone_sync.sh"
+        user="root"
+        job="setlock -n /tmp/zone_sync.lock /home/{{ opsuser }}/zone_sync/zone_sync.sh"

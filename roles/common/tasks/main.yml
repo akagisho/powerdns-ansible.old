@@ -1,4 +1,7 @@
 - name: add user
   user: name={{ opsuser }} groups=sudo generate_ssh_key=yes
+- name: create zone_sync directory
+  file: path=/home/{{ opsuser }}/zone_sync state=directory
+        owner={{ opsuser }}
 - name: apt-get update
   apt: update_cache=yes

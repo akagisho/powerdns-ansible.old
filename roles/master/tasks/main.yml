@@ -11,6 +11,7 @@
     - libxslt-dev
     - libmysqlclient-dev
     - git
+    - daemontools
 - name: copy PowerDNS config file
   copy: src=etc/powerdns/pdns.conf
         dest=/etc/powerdns/pdns.conf
@@ -59,3 +60,11 @@
             dest=/etc/nginx/conf.d/powerdns-on-rails.conf
 - name: restart nginx
   service: name=nginx state=restarted
+- name: copy master_zones.sh
+  copy: src=home/dnsops/zone_sync/master_zones.sh
+        dest=/home/{{ opsuser }}/zone_sync/master_zones.sh
+        owner=dnsops mode=0755
+- name: add master_zones.sh to cron
+  cron: name="master_zones.sh"
+        user="{{ opsuser }}"
+        job="setlock -n /tmp/master_zones.lock /home/{{ opsuser }}/zone_sync/master_zones.sh"
