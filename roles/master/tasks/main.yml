@@ -24,16 +24,16 @@
 - name: install bundler
   shell: gem install bundler --no-ri --no-rdoc
 - name: make www directory
-  file: path=/var/www state=directory
+  file: path={{ document_root }} state=directory
 - name: clone powerdns-on-rails
   git: repo=https://github.com/akagisho/powerdns-on-rails.git
-       dest=/var/www/powerdns-on-rails
+       dest={{ document_root }}/powerdns-on-rails
        version=revised
 - name: copy database config file
   copy: src=var/www/powerdns-on-rails/config/database.yml
-        dest=/var/www/powerdns-on-rails/config/database.yml
+        dest={{ document_root }}/powerdns-on-rails/config/database.yml
 - name: install powerdns-on-rails
-  shell: chdir=/var/www/powerdns-on-rails
+  shell: chdir={{ document_root }}/powerdns-on-rails
     bundle install --path vendor/bundle --without test development
     && bundle exec rake db:migrate RAILS_ENV=production
     && bundle exec rake assets:precompile RAILS_ENV=production
@@ -46,7 +46,7 @@
   shell: kill -INT `cat /tmp/powerdns-on-rails.pid`
   when: (unicorn_is_running.stdout)
 - name: start unicorn
-  shell: chdir=/var/www/powerdns-on-rails
+  shell: chdir={{ document_root }}/powerdns-on-rails
     bundle exec unicorn_rails -c config/unicorn.rb -E production -D
 - name: install nginx
   apt: pkg=nginx
@@ -55,7 +55,7 @@
 - name: remove nginx default config file
   file: path=/etc/nginx/sites-enabled/default state=absent
 - name: copy nginx config file
-  copy: src=etc/nginx/conf.d/powerdns-on-rails.conf
-        dest=/etc/nginx/conf.d/powerdns-on-rails.conf
+  template: src=etc/nginx/conf.d/powerdns-on-rails.conf.j2
+            dest=/etc/nginx/conf.d/powerdns-on-rails.conf
 - name: restart nginx
   service: name=nginx state=restarted

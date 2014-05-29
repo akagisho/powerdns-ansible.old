@@ -17,7 +17,7 @@ server {
     }
 
     location ~ ^/(stylesheets|javascripts|images)/ {
-        root    /var/www/powerdns-on-rails/public;
+        root    {{ document_root }}/powerdns-on-rails/public;
     }
 
     location = /robots.txt  { log_not_found off; }

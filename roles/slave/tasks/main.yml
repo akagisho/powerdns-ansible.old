@@ -12,8 +12,8 @@
 - name: reload bind9
   service: name=bind9 state=reloaded
 - name: get publickey
-  shell: cat /home/dnsops/.ssh/id_rsa.pub
+  shell: cat /home/{{ opsuser }}/.ssh/id_rsa.pub
   register: slave_publickey
 - name: set publickey to master
-  shell: echo '{{ slave_publickey.stdout }}' >> /home/dnsops/.ssh/authorized_keys
-  delegate_to: 10.200.19.10
+  shell: echo '{{ slave_publickey.stdout }}' >> /home/{{ opsuser }}/.ssh/authorized_keys
+  delegate_to: "{{ master }}"
