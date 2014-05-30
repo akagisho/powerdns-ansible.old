@@ -31,7 +31,7 @@ Start VMs.
 
 Check VMs' connection.
 
-    $ ansible -i inventory/stage all -m ping
+    $ ansible -i stage/inventory all -m ping
     10.200.19.10 | success >> {
         "changed": false,
         "ping": "pong"
