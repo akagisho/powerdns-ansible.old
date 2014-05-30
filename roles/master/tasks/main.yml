@@ -13,9 +13,9 @@
     - git
     - daemontools
 - name: copy PowerDNS config file
-  copy: src=etc/powerdns/pdns.conf
-        dest=/etc/powerdns/pdns.conf
-        mode=0600
+  template: src=etc/powerdns/pdns.conf.j2
+            dest=/etc/powerdns/pdns.conf
+            mode=0600
 - name: disable DNSSEC
   shell: sed -i 's/^gmysql-dnssec=yes/gmysql-dnssec=no/' /etc/powerdns/pdns.d/pdns.local.gmysql
 - name: reload PowerDNS
