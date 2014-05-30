@@ -14,6 +14,11 @@ server {
         proxy_set_header Client-IP $remote_addr;
         proxy_set_header X-Forwarded-For $remote_addr;
         proxy_pass http://powerdns-on-rails;
+
+        {% for nginx_allow_ip in nginx_allow_ips %}
+        allow {{ nginx_allow_ip }};
+        {% endfor %}
+        deny all;
     }
 
     location ~ ^/(stylesheets|javascripts|images)/ {
