@@ -20,7 +20,7 @@
 - name: copy zone_sync.sh
   template: src=home/dnsops/zone_sync/zone_sync.sh.j2
             dest=/home/{{ opsuser }}/zone_sync/zone_sync.sh
-            owner=dnsops mode=0755
+            owner={{ opsuser }} mode=0755
 - name: add zone_sync.sh to cron
   cron: name="zone_sync.sh"
         user="root"

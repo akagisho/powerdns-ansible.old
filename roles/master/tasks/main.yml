@@ -63,7 +63,7 @@
 - name: copy master_zones.sh
   copy: src=home/dnsops/zone_sync/master_zones.sh
         dest=/home/{{ opsuser }}/zone_sync/master_zones.sh
-        owner=dnsops mode=0755
+        owner={{ opsuser }} mode=0755
 - name: add master_zones.sh to cron
   cron: name="master_zones.sh"
         user="{{ opsuser }}"
