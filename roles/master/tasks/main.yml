@@ -17,7 +17,9 @@
             dest=/etc/powerdns/pdns.conf
             mode=0600
 - name: disable DNSSEC
-  shell: sed -i 's/^gmysql-dnssec=yes/gmysql-dnssec=no/' /etc/powerdns/pdns.d/pdns.local.gmysql
+  lineinfile: dest=/etc/powerdns/pdns.d/pdns.local.gmysql
+              regexp=^gmysql-dnssec=
+              line=gmysql-dnssec=no
 - name: reload PowerDNS
   service: name=pdns state=reloaded
 - name: uninstall ruby1.8
