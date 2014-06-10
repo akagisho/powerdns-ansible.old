@@ -15,7 +15,8 @@
   shell: cat /home/{{ opsuser }}/.ssh/id_rsa.pub
   register: slave_publickey
 - name: set publickey to master
-  shell: echo '{{ slave_publickey.stdout }}' >> /home/{{ opsuser }}/.ssh/authorized_keys
+  authorized_key: user={{ opsuser }}
+                  key="{{ slave_publickey.stdout }}"
   delegate_to: "{{ master }}"
 - name: copy zone_sync.sh
   template: src=home/dnsops/zone_sync/zone_sync.sh.j2
