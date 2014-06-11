@@ -1,3 +1,4 @@
 - name: generate ssh key pair
   shell: test -d tmp || mkdir tmp
-         && test -f tmp/{{ opsuser }} || ssh-keygen -t rsa -N "" -f tmp/{{ opsuser }}
+         && ssh-keygen -t rsa -N "" -f tmp/{{ opsuser }}
+         creates=tmp/{{ opsuser }}
