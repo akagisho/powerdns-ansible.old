@@ -1,5 +1,15 @@
 - name: add user
-  user: name={{ opsuser }} groups=sudo generate_ssh_key=yes
+  user: name={{ opsuser }} groups=sudo
+- name: make .ssh directory
+  file: path=/home/{{ opsuser }}/.ssh
+        state=directory
+        owner={{ opsuser }}
+        mode=0700
+- name: set private key
+  copy: src=tmp/{{ opsuser }}
+        dest=/home/{{ opsuser }}/.ssh/id_rsa
+        owner={{ opsuser }}
+        mode=0600
 - name: create zone_sync directory
   file: path=/home/{{ opsuser }}/zone_sync state=directory
         owner={{ opsuser }}

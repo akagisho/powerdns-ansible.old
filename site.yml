@@ -1,3 +1,8 @@
+- hosts: local
+  sudo: no
+  roles:
+    - local
+
 - hosts: master
   sudo: yes
   roles:

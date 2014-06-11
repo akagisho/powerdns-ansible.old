@@ -11,13 +11,6 @@
         owner=bind
 - name: reload bind9
   service: name=bind9 state=reloaded
-- name: get publickey
-  shell: cat /home/{{ opsuser }}/.ssh/id_rsa.pub
-  register: slave_publickey
-- name: set publickey to master
-  authorized_key: user={{ opsuser }}
-                  key="{{ slave_publickey.stdout }}"
-  delegate_to: "{{ master }}"
 - name: copy zone_sync.sh
   template: src=home/dnsops/zone_sync/zone_sync.sh.j2
             dest=/home/{{ opsuser }}/zone_sync/zone_sync.sh
