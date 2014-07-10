@@ -16,6 +16,7 @@ options {
 
 	recursion no;
 	allow-new-zones yes;
+	allow-transfer { none; };
 
 	//========================================================================
 	// If BIND logs error messages about the root key being expired,
