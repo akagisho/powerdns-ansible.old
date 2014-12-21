@@ -24,6 +24,11 @@
     - git
     - daemontools
 
+- name: copy Upstart config file
+  template:
+    src=etc/init/unicorn.conf.j2
+    dest=/etc/init/unicorn.conf
+
 - name: copy PowerDNS config file
   template:
     src=etc/powerdns/pdns.conf.j2
@@ -74,18 +79,10 @@
     && bundle exec rake db:seed RAILS_ENV=production
     && bundle exec rake generate_secret_token
 
-- name: check whether unicorn is running
-  shell: "[ -f /tmp/powerdns-on-rails.pid ] && echo 'running' || echo ''"
-  register: unicorn_is_running
-
-- name: stop unicorn
-  shell: kill -INT `cat /tmp/powerdns-on-rails.pid`
-  when: (unicorn_is_running.stdout)
-
-- name: start unicorn
-  shell:
-    chdir={{ document_root }}/powerdns-on-rails
-    bundle exec unicorn_rails -c config/unicorn.rb -E production -D
+- name: restart unicorn
+  service:
+    name=unicorn
+    state=restarted
 
 - name: install nginx
   apt: pkg=nginx

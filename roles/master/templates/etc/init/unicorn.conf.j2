@@ -1,0 +1,12 @@
+description "Unicorn"
+
+start on runlevel [2345]
+stop on runlevel [016]
+
+env PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:
+
+env ENV=production
+env CONF={{ document_root }}/powerdns-on-rails/config/unicorn.rb
+
+chdir {{ document_root }}/powerdns-on-rails
+exec bundle exec unicorn_rails -c ${CONF} -E ${ENV}
