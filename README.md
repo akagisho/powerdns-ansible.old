@@ -2,7 +2,7 @@
 
 ## requirements
 
-* Vagrant
+* Vagrant 1.5+
 * Ansible
 
 ## setup
@@ -19,11 +19,6 @@ Clone this repository.
 
     $ git clone https://github.com/akagisho/ansible-powerdns.git
     $ cd ansible-powerdns
-
-Add vagrant box.
-
-    $ vagrant box add ubuntu-server-12.04-amd64 \
-          http://cloud-images.ubuntu.com/vagrant/precise/current/precise-server-cloudimg-amd64-vagrant-disk1.box
 
 Start VMs.
 
