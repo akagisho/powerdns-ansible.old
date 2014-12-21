@@ -1,0 +1,15 @@
+---
+- name: reload powerdns
+  service:
+    name=pdns
+    state=reloaded
+
+- name: restart unicorn
+  service:
+    name=unicorn
+    state=restarted
+
+- name: reload nginx
+  service:
+    name=nginx
+    state=reloaded

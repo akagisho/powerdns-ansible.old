@@ -12,6 +12,7 @@
 - name: install depences
   apt: pkg={{ item }}
   with_items:
+    - nginx
     - mysql-server
     - mysql-client
     - pdns-server
@@ -34,17 +35,14 @@
     src=etc/powerdns/pdns.conf.j2
     dest=/etc/powerdns/pdns.conf
     mode=0600
+  notify: reload powerdns
 
 - name: disable DNSSEC
   lineinfile:
     dest=/etc/powerdns/pdns.d/pdns.local.gmysql
     regexp=^gmysql-dnssec=
     line=gmysql-dnssec=no
-
-- name: reload PowerDNS
-  service:
-    name=pdns
-    state=reloaded
+  notify: reload powerdns
 
 - name: uninstall ruby1.8
   apt:
@@ -64,11 +62,13 @@
     repo=https://github.com/akagisho/powerdns-on-rails.git
     dest={{ document_root }}/powerdns-on-rails
     version=revised
+  notify: restart unicorn
 
 - name: copy database config file
   copy:
     src=var/www/powerdns-on-rails/config/database.yml
     dest={{ document_root }}/powerdns-on-rails/config/database.yml
+  notify: restart unicorn
 
 - name: install powerdns-on-rails
   shell:
@@ -78,14 +78,7 @@
     && bundle exec rake assets:precompile RAILS_ENV=production
     && bundle exec rake db:seed RAILS_ENV=production
     && bundle exec rake generate_secret_token
-
-- name: restart unicorn
-  service:
-    name=unicorn
-    state=restarted
-
-- name: install nginx
-  apt: pkg=nginx
+  notify: restart unicorn
 
 - name: make log directory
   file:
@@ -96,14 +89,14 @@
   file:
     path=/etc/nginx/sites-enabled/default
     state=absent
+  notify: reload nginx
 
 - name: copy nginx config file
   template:
     src=etc/nginx/conf.d/powerdns-on-rails.conf.j2
     dest=/etc/nginx/conf.d/powerdns-on-rails.conf
+  notify: reload nginx
 
-- name: restart nginx
-  service: name=nginx state=restarted
 - name: copy master_zones.sh
   copy:
     src=home/dnsops/zone_sync/master_zones.sh

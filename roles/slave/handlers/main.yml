@@ -1,0 +1,5 @@
+---
+- name: reload bind9
+  service:
+    name=bind9
+    state=reloaded

@@ -9,17 +9,13 @@
   copy:
     src=etc/bind/named.conf.options
     dest=/etc/bind/named.conf.options
+  notify: reload bind9
 
 - name: make zones directory
   file:
     path=/var/cache/bind/slave
     state=directory
     owner=bind
-
-- name: reload bind9
-  service:
-    name=bind9
-    state=reloaded
 
 - name: copy zone_sync.sh
   template:
