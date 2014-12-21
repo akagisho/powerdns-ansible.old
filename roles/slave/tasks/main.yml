@@ -1,21 +1,35 @@
+---
 - name: install depences
   apt: pkg={{ item }}
   with_items:
     - bind9
     - daemontools
+
 - name: copy bind9 config file
-  copy: src=etc/bind/named.conf.options
-        dest=/etc/bind/named.conf.options
+  copy:
+    src=etc/bind/named.conf.options
+    dest=/etc/bind/named.conf.options
+
 - name: make zones directory
-  file: path=/var/cache/bind/slave state=directory
-        owner=bind
+  file:
+    path=/var/cache/bind/slave
+    state=directory
+    owner=bind
+
 - name: reload bind9
-  service: name=bind9 state=reloaded
+  service:
+    name=bind9
+    state=reloaded
+
 - name: copy zone_sync.sh
-  template: src=home/dnsops/zone_sync/zone_sync.sh.j2
-            dest=/home/{{ opsuser }}/zone_sync/zone_sync.sh
-            owner={{ opsuser }} mode=0755
+  template:
+    src=home/dnsops/zone_sync/zone_sync.sh.j2
+    dest=/home/{{ opsuser }}/zone_sync/zone_sync.sh
+    owner={{ opsuser }}
+    mode=0755
+
 - name: add zone_sync.sh to cron
-  cron: name="zone_sync.sh"
-        user="root"
-        job="setlock -n /tmp/zone_sync.lock /home/{{ opsuser }}/zone_sync/zone_sync.sh"
+  cron:
+    name="zone_sync.sh"
+    user="root"
+    job="setlock -n /tmp/zone_sync.lock /home/{{ opsuser }}/zone_sync/zone_sync.sh"

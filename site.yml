@@ -1,3 +1,4 @@
+---
 - hosts: local
   sudo: no
   roles:
