@@ -18,6 +18,12 @@
     owner={{ opsuser }}
     mode=0600
 
+- name: set public key
+  copy:
+    src=tmp/{{ opsuser }}.pub
+    dest=/home/{{ opsuser }}/.ssh/id_rsa.pub
+    owner={{ opsuser }}
+
 - name: create zone_sync directory
   file:
     path=/home/{{ opsuser }}/zone_sync
