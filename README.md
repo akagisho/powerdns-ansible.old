@@ -55,6 +55,15 @@ Check installation.
     ns1.example.com. admin.example.com. 2014052907 10800 7200 604800 10800
     ns1.example.com. admin.example.com. 2014052907 10800 7200 604800 10800
 
+## test
+
+You can test server's configurations by using Serverspec.
+
+    $ bundle install --path vendor/bundle
+    $ rm -f hosts && ln -s <environment>/inventory hosts
+    $ bundle exec rake serverspec:master
+    $ bundle exec rake serverspec:slave
+
 ## use
 
 Access PowerDNS on Rails interface with admin@example.com/secret.

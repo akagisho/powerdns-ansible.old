@@ -2,3 +2,8 @@
 production/inventory
 production/group_vars/all
 tmp
+
+/.bundle
+/hosts
+Gemfile.lock
+vendor/bundle
