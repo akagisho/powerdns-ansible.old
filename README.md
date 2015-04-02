@@ -46,6 +46,8 @@ Check VMs' connection.
 
 Execute ansible playbook.
 
+    $ vagrant provision
+        OR
     $ ansible-playbook -i develop/inventory site.yml
 
 Check installation.

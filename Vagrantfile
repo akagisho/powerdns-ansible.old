@@ -20,5 +20,16 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     node.vm.network :private_network, ip: "10.200.19.12"
   end
 
+  config.vm.provision "ansible" do |ansible|
+    ansible.playbook = "site.yml"
+
+    ansible.groups = {
+      "master" => ["node1"],
+      "slave" => ["node2", "node3"]
+    }
+
+    ansible.extra_vars = "develop/group_vars/all"
+  end
+
   config.ssh.insert_key = false
 end
