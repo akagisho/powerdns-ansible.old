@@ -26,7 +26,7 @@ Start VMs.
 
 Check VMs' connection.
 
-    $ ansible -i stage/inventory all -m ping
+    $ ansible -i develop/inventory all -m ping
     10.200.19.10 | success >> {
         "changed": false,
         "ping": "pong"
@@ -46,7 +46,7 @@ Check VMs' connection.
 
 Execute ansible playbook.
 
-    $ ansible-playbook -i stage/inventory site.yml
+    $ ansible-playbook -i develop/inventory site.yml
 
 Check installation.
 
