@@ -1,0 +1,52 @@
+---
+- name: install apt key
+  apt_key: url=http://deb.knot-dns.cz/debian/apt.key
+
+- name: put knot.list
+  copy: >
+    src=etc/apt/sources.list.d/knot.list
+    dest=/etc/apt/sources.list.d/knot.list
+
+- name: install depences
+  apt: >
+    pkg={{ item }}
+    update_cache=yes
+  with_items:
+    - knot
+    - daemontools
+  notify:
+    - killall knotd
+    - start knotd
+
+- name: create slaves directory
+  file: >
+    dest={{ item }}
+    state=directory
+    mode=0750
+    owner=knot
+    group=knot
+  with_items:
+    - /etc/knot/slaves
+    - /var/lib/knot/slaves
+    
+- name: put knot.conf
+  template: >
+    src=etc/knot/knot.conf.j2
+    dest=/etc/knot/knot.conf
+    mode=0640
+    owner=knot
+    group=knot
+  notify: reload knot
+
+- name: copy zone_sync.sh
+  template: >
+    src=home/dnsops/zone_sync/zone_sync.sh.j2
+    dest=/home/{{ opsuser }}/zone_sync/zone_sync.sh
+    owner={{ opsuser }}
+    mode=0755
+
+- name: add zone_sync.sh to cron
+  cron: >
+    name="zone_sync.sh"
+    user="root"
+    job="setlock -n /tmp/zone_sync.lock /home/{{ opsuser }}/zone_sync/zone_sync.sh"

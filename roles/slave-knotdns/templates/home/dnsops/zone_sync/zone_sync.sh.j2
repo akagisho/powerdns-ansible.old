@@ -1,0 +1,38 @@
+#!/bin/sh
+
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+MASTER_HOST={{ master }}
+MASTER_USER={{ opsuser }}
+
+SLAVES_DIR=/etc/knot/slaves
+
+set -e
+
+DIR=$(cd $(dirname $0); pwd)
+TEMP=$(mktemp $DIR/.slave_zones.txt.XXXXX)
+
+scp -p -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no \
+    -i /home/$MASTER_USER/.ssh/id_rsa \
+    $MASTER_USER@$MASTER_HOST:zone_sync/master_zones.txt $DIR
+
+knotc zonestatus | grep type=slave | awk '{print $1}' | sed -e 's/\.$//' | sort > $TEMP \
+    && mv $TEMP $DIR/slave_zones.txt
+
+CHANGED=0
+for i in $(diff $DIR/master_zones.txt $DIR/slave_zones.txt | grep '^<' | awk '{print $2}'); do
+    CHANGED=1
+    echo "$i {
+  file \"slaves/$i.zone\";
+  xfr-in master0;
+  notify-in master0;
+}" > $SLAVES_DIR/$i
+done
+
+for i in $(diff $DIR/master_zones.txt $DIR/slave_zones.txt | grep '^>' | awk '{print $2}'); do
+    rm -f $SLAVES_DIR/$i && CHANGED=1
+done
+
+if [ $CHANGED -eq 1 ]; then
+    knotc reload
+fi

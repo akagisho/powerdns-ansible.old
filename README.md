@@ -64,7 +64,8 @@ You can test server's configurations by using Serverspec.
     $ bundle install --path vendor/bundle
     $ rm -f hosts && ln -s <environment>/inventory hosts
     $ bundle exec rake serverspec:master
-    $ bundle exec rake serverspec:slave
+    $ bundle exec rake serverspec:slave-bind
+    $ bundle exec rake serverspec:slave-knotdns
 
 ## use
 

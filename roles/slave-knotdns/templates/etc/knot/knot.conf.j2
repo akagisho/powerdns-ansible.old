@@ -1,0 +1,40 @@
+system {
+  identity on;
+  version on;
+  user knot.knot;
+  rundir "/run/knot";
+}
+
+interfaces {
+  all_ipv4 {
+    address 0.0.0.0;
+    port 53;
+  }
+}
+
+control {
+  listen-on "knot.sock";
+}
+
+remotes {
+  master0 {
+    address {{ master }}@53;
+  }
+}
+
+zones {
+  storage "/var/lib/knot";
+  include "slaves";
+}
+
+log {
+  syslog {
+    # Log info and more serious events to syslog
+    any info;
+  }
+
+  # Log warnings, errors and criticals to stderr
+  stderr {
+    any warning;
+  }
+}

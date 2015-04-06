@@ -25,7 +25,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
     ansible.groups = {
       "master" => ["node1"],
-      "slave" => ["node2", "node3"]
+      "slave-bind" => ["node2"],
+      "slave-knotdns" => ["node3"]
     }
 
     ansible.extra_vars = "develop/group_vars/all"

@@ -1,0 +1,13 @@
+---
+- name: start knotd
+  service: >
+    name=knot
+    state=started
+
+- name: reload knot
+  service: >
+    name=knot
+    state=reloaded
+
+- name: killall knotd
+  shell: killall knotd

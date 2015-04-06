@@ -12,9 +12,16 @@
     - common
     - master
 
-- name: slave
-  hosts: slave
+- name: slave-bind
+  hosts: slave-bind
   sudo: yes
   roles:
     - common
-    - slave
+    - slave-bind
+
+- name: slave-knotdns
+  hosts: slave-knotdns
+  sudo: yes
+  roles:
+    - common
+    - slave-knotdns

@@ -4,6 +4,8 @@
 [master]
 10.200.19.10
 
-[slave]
+[slave-bind]
 10.200.19.11
+
+[slave-knotdns]
 10.200.19.12
