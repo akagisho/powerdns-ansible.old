@@ -19,7 +19,6 @@ scp -p -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no \
 knotc zonestatus | grep type=slave | awk '{print $1}' | sed -e 's/\.$//' | sort > $TEMP \
     && mv $TEMP $DIR/slave_zones.txt
 
-CHANGED=0
 for i in $(diff $DIR/master_zones.txt $DIR/slave_zones.txt | grep '^<' | awk '{print $2}'); do
     CHANGED=1
     echo "$i {
@@ -27,12 +26,10 @@ for i in $(diff $DIR/master_zones.txt $DIR/slave_zones.txt | grep '^<' | awk '{p
   xfr-in master0;
   notify-in master0;
 }" > $SLAVES_DIR/$i
+    knotc reload $i
 done
 
 for i in $(diff $DIR/master_zones.txt $DIR/slave_zones.txt | grep '^>' | awk '{print $2}'); do
-    rm -f $SLAVES_DIR/$i && CHANGED=1
+    rm -f $SLAVES_DIR/$i
+    knotc reload $i
 done
-
-if [ $CHANGED -eq 1 ]; then
-    knotc reload
-fi
