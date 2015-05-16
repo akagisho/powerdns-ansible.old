@@ -1,6 +1,7 @@
 ---
 - name: local
-  hosts: local
+  hosts: 127.0.0.1
+  connection: local
   sudo: no
   roles:
     - local

@@ -73,6 +73,7 @@ end
 
 namespace :serverspec do
   properties.each do |var|
+    next if var["hosts"] == "127.0.0.1"
     var["hosts"].each do |host|
       desc "Run serverspec for #{var["name"]}"
       RSpec::Core::RakeTask.new(var["name"].to_sym) do |t|
