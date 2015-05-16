@@ -1,4 +1,4 @@
-# ansible-powerdns
+# powerdns-ansible
 
 ## requirements
 
@@ -17,8 +17,8 @@ Add below lines to $HOME/.ssh/config of local machine.
 
 Clone this repository.
 
-    $ git clone https://github.com/akagisho/ansible-powerdns.git
-    $ cd ansible-powerdns
+    $ git clone https://github.com/akagisho/powerdns-ansible.git
+    $ cd powerdns-ansible
 
 Start VMs.
 
