@@ -6,17 +6,17 @@ VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.define :node1 do |node|
-    node.vm.box = "ubuntu/precise64"
+    node.vm.box = "ubuntu/trusty64"
     node.vm.network :private_network, ip: "10.200.19.10"
   end
 
   config.vm.define :node2 do |node|
-    node.vm.box = "ubuntu/precise64"
+    node.vm.box = "ubuntu/trusty64"
     node.vm.network :private_network, ip: "10.200.19.11"
   end
 
   config.vm.define :node3 do |node|
-    node.vm.box = "ubuntu/precise64"
+    node.vm.box = "ubuntu/trusty64"
     node.vm.network :private_network, ip: "10.200.19.12"
   end
 

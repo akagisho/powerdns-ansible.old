@@ -12,18 +12,26 @@
 - name: install depences
   apt: pkg={{ item }}
   with_items:
+    - gcc
+    - g++
+    - make
     - nginx
     - mysql-server
     - mysql-client
     - pdns-server
     - pdns-backend-mysql
-    - ruby1.9.3
-    - rubygems
+    - ruby
+    - ruby-dev
     - libxml2-dev
     - libxslt-dev
     - libmysqlclient-dev
     - git
     - daemontools
+
+- name: drop tables
+  shell:
+    mysql pdns -e 'drop table domains; drop table records' && touch /var/tmp/dropped_tables
+    creates=/var/tmp/dropped_tables
 
 - name: copy Upstart config file
   template:
@@ -39,14 +47,14 @@
 
 - name: disable DNSSEC
   lineinfile:
-    dest=/etc/powerdns/pdns.d/pdns.local.gmysql
+    dest=/etc/powerdns/pdns.d/pdns.local.gmysql.conf
     regexp=^gmysql-dnssec=
     line=gmysql-dnssec=no
   notify: reload powerdns
 
-- name: uninstall ruby1.8
-  apt:
-    pkg=ruby1.8
+- name: remove pdns.simplebind.conf
+  file:
+    path=/etc/powerdns/pdns.d/pdns.simplebind.conf
     state=absent
 
 - name: install bundler

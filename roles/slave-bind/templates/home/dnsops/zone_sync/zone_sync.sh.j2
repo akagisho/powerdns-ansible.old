@@ -13,7 +13,7 @@ TEMP=$(mktemp $DIR/.slave_zones.txt.XXXXX)
 scp -p -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no \
     -i /home/$MASTER_USER/.ssh/id_rsa \
     $MASTER_USER@$MASTER_HOST:zone_sync/master_zones.txt $DIR
-cat /var/cache/bind/3bf305731dd26307.nzf | awk '{print $2}' | sort > $TEMP \
+grep -v '^#' /var/cache/bind/3bf305731dd26307.nzf | awk '{print $2}' | tr -d '"' | sort > $TEMP \
     && mv $TEMP $DIR/slave_zones.txt
 
 for i in $(diff $DIR/master_zones.txt $DIR/slave_zones.txt | grep '^<' | awk '{print $2}'); do

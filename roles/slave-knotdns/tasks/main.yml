@@ -7,6 +7,14 @@
     src=etc/apt/sources.list.d/knot.list
     dest=/etc/apt/sources.list.d/knot.list
 
+- name: put init-system-helpers_1.18_all.deb
+  copy: >
+    src=usr/local/src/init-system-helpers_1.18_all.deb
+    dest=/usr/local/src/init-system-helpers_1.18_all.deb
+
+- name: install init-system-helpers 1.18
+  apt: deb=/usr/local/src/init-system-helpers_1.18_all.deb
+
 - name: install depences
   apt: >
     pkg={{ item }}
