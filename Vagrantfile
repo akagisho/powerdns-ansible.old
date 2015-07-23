@@ -20,13 +20,19 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     node.vm.network :private_network, ip: "10.200.19.12"
   end
 
+  config.vm.define :node4 do |node|
+    node.vm.box = "ubuntu/trusty64"
+    node.vm.network :private_network, ip: "10.200.19.13"
+  end
+
   config.vm.provision "ansible" do |ansible|
     ansible.playbook = "site.yml"
 
     ansible.groups = {
       "master" => ["node1"],
       "slave-bind" => ["node2"],
-      "slave-knotdns" => ["node3"]
+      "slave-knotdns" => ["node3"],
+      "slave-nsd" => ["node4"]
     }
 
     ansible.extra_vars = "develop/group_vars/all"

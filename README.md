@@ -52,7 +52,8 @@ Execute ansible playbook.
 
 Check installation.
 
-    $ for i in 10.200.19.10 10.200.19.11 10.200.19.12; do dig @$i example.com. soa +short; done
+    $ for i in 10.200.19.10 10.200.19.11 10.200.19.12 10.200.19.13; do dig @$i example.com. soa +short; done
+    ns1.example.com. admin.example.com. 2014052907 10800 7200 604800 10800
     ns1.example.com. admin.example.com. 2014052907 10800 7200 604800 10800
     ns1.example.com. admin.example.com. 2014052907 10800 7200 604800 10800
     ns1.example.com. admin.example.com. 2014052907 10800 7200 604800 10800
@@ -66,6 +67,7 @@ You can test server's configurations by using Serverspec.
     $ bundle exec rake serverspec:master
     $ bundle exec rake serverspec:slave-bind
     $ bundle exec rake serverspec:slave-knotdns
+    $ bundle exec rake serverspec:slave-nsd
 
 ## use
 

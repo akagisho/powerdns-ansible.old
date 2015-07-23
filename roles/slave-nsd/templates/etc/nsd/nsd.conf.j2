@@ -1,0 +1,24 @@
+# NSD configuration file for Debian.
+#
+# See the nsd.conf(5) man page.
+#
+# See /usr/share/doc/nsd/examples/nsd.conf for a commented
+# reference config file.
+#
+# The following line includes additional configuration files from the
+# /etc/nsd/nsd.conf.d directory.
+
+# WARNING: The glob style doesn't work yet...
+# include: "/etc/nsd/nsd.conf.d/*.conf"
+
+server:
+    zonesdir: "/var/lib/nsd"
+
+remote-control:
+    control-enable: yes
+
+pattern:
+    name: "slavezone"
+    zonefile: "slaves/%s.zone"
+    allow-notify: {{ master }} NOKEY
+    request-xfr: {{ master }} NOKEY

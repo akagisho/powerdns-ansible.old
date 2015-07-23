@@ -6,3 +6,6 @@
 
 [slave-knotdns]
 10.200.19.12
+
+[slave-nsd]
+10.200.19.13

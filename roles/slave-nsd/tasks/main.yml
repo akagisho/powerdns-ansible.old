@@ -1,0 +1,32 @@
+---
+- name: install depences
+  apt: pkg={{ item }}
+  with_items:
+    - nsd
+    - daemontools
+
+- name: put nsd.conf
+  template:
+    src=etc/nsd/nsd.conf.j2
+    dest=/etc/nsd/nsd.conf
+  notify: restart nsd
+
+- name: create zones directory
+  file:
+    path=/var/lib/nsd/slaves
+    state=directory
+    owner=nsd
+    group=nsd
+
+- name: copy zone_sync.sh
+  template:
+    src=home/dnsops/zone_sync/zone_sync.sh.j2
+    dest=/home/{{ opsuser }}/zone_sync/zone_sync.sh
+    owner={{ opsuser }}
+    mode=0755
+
+- name: add zone_sync.sh to cron
+  cron:
+    name="zone_sync.sh"
+    user="root"
+    job="setlock -n /tmp/zone_sync.lock /home/{{ opsuser }}/zone_sync/zone_sync.sh"
