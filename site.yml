@@ -3,12 +3,16 @@
   hosts: 127.0.0.1
   connection: local
   sudo: no
+  vars_files:
+    - vars/{{ env }}.yml
   roles:
     - local
 
 - name: master
   hosts: master
   sudo: yes
+  vars_files:
+    - vars/{{ env }}.yml
   roles:
     - common
     - master
@@ -16,6 +20,8 @@
 - name: slave-bind
   hosts: slave-bind
   sudo: yes
+  vars_files:
+    - vars/{{ env }}.yml
   roles:
     - common
     - slave-bind
@@ -23,6 +29,8 @@
 - name: slave-knotdns
   hosts: slave-knotdns
   sudo: yes
+  vars_files:
+    - vars/{{ env }}.yml
   roles:
     - common
     - slave-knotdns
@@ -30,6 +38,8 @@
 - name: slave-nsd
   hosts: slave-nsd
   sudo: yes
+  vars_files:
+    - vars/{{ env }}.yml
   roles:
     - common
     - slave-nsd

@@ -35,7 +35,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       "slave-nsd" => ["node4"]
     }
 
-    ansible.extra_vars = "develop/group_vars/all"
+    ansible.extra_vars = "vars/development.yml"
   end
 
   config.ssh.insert_key = false

@@ -26,7 +26,7 @@ Start VMs.
 
 Check VMs' connection.
 
-    $ ansible -i develop/inventory all -m ping
+    $ ansible -i inventories/development all -m ping
     10.200.19.10 | success >> {
         "changed": false,
         "ping": "pong"
@@ -41,6 +41,11 @@ Check VMs' connection.
         "changed": false,
         "ping": "pong"
     }
+    
+    10.200.19.13 | success >> {
+        "changed": false,
+        "ping": "pong"
+    }
 
 ## execute
 
@@ -48,7 +53,7 @@ Execute ansible playbook.
 
     $ vagrant provision
         OR
-    $ ansible-playbook -i develop/inventory site.yml
+    $ ansible-playbook -i inventories/development site.yml
 
 Check installation.
 
@@ -63,7 +68,7 @@ Check installation.
 You can test server's configurations by using Serverspec.
 
     $ bundle install --path vendor/bundle
-    $ rm -f hosts && ln -s <environment>/inventory hosts
+    $ rm -f hosts && ln -s inventories/<environment> hosts
     $ bundle exec rake serverspec:master
     $ bundle exec rake serverspec:slave-bind
     $ bundle exec rake serverspec:slave-knotdns

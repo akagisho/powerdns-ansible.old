@@ -11,4 +11,5 @@
 10.200.19.13
 
 [all:vars]
+env=development
 ansible_ssh_user=vagrant
