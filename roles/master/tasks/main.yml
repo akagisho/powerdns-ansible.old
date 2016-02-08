@@ -71,6 +71,7 @@
     dest={{ document_root }}/powerdns-on-rails
     version=revised
   notify: restart unicorn
+  ignore_errors: True
 
 - name: copy database config file
   copy:
