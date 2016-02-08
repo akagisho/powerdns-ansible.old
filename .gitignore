@@ -1,6 +1,6 @@
 .vagrant
-production/inventory
-production/group_vars/all
+inventories/production
+vars/production.yml
 tmp
 
 /.bundle
