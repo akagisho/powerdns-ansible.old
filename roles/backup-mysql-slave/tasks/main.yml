@@ -1,0 +1,15 @@
+---
+- name: create directory
+  file: >
+    path=/home/{{ opsuser }}/backup_mysql
+    state=directory
+    owner=dnsops
+    group=dnsops
+
+- name: set cron
+  cron: >
+    name="backup mysql"
+    user="{{ opsuser }}"
+    job="rsync -e 'ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no' -a --delete {{ master }}:/home/{{ opsuser }}/backup_mysql/ /home/{{ opsuser }}/backup_mysql"
+    hour=4
+    minute=0

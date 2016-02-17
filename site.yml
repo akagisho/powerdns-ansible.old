@@ -16,6 +16,7 @@
   roles:
     - common
     - master
+    - backup-mysql
 
 - name: slave-bind
   hosts: slave-bind
@@ -25,6 +26,7 @@
   roles:
     - common
     - slave-bind
+    - backup-mysql-slave
 
 - name: slave-knotdns
   hosts: slave-knotdns
@@ -34,6 +36,7 @@
   roles:
     - common
     - slave-knotdns
+    - backup-mysql-slave
 
 - name: slave-nsd
   hosts: slave-nsd
@@ -43,3 +46,4 @@
   roles:
     - common
     - slave-nsd
+    - backup-mysql-slave

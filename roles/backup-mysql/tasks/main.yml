@@ -1,0 +1,21 @@
+---
+- name: put backup_mysql.sh
+  copy: >
+    src=usr/local/bin/backup_mysql.sh
+    dest=/usr/local/bin/backup_mysql.sh
+    mode=755
+
+- name: create directory
+  file: >
+    path=/home/{{ opsuser }}/backup_mysql
+    state=directory
+    owner=dnsops
+    group=dnsops
+
+- name: set cron
+  cron: >
+    name="backup mysql"
+    user="{{ opsuser }}"
+    job="cd /home/{{ opsuser }}/backup_mysql && /usr/local/bin/backup_mysql.sh -u root pdns"
+    hour=3
+    minute=30
