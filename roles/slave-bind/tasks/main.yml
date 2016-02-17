@@ -7,8 +7,10 @@
 
 - name: copy bind9 config file
   copy:
-    src=etc/bind/named.conf.options
-    dest=/etc/bind/named.conf.options
+    src={{ item }}
+    dest=/etc/bind/
+  with_fileglob:
+    - etc/bind/*
   notify: reload bind9
 
 - name: make zones directory
