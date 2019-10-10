@@ -1,14 +1,4 @@
 ---
-- name: get public key
-  local_action: command cat tmp/{{ opsuser }}.pub
-  sudo: no
-  register: authorized_key
-
-- name: set authorized_key
-  authorized_key:
-    user={{ opsuser }}
-    key="{{ authorized_key.stdout }}"
-
 - name: install depences
   apt: pkg={{ item }}
   with_items:

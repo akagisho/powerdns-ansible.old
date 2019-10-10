@@ -11,18 +11,46 @@
     owner={{ opsuser }}
     mode=0700
 
-- name: set private key
-  copy:
-    src=tmp/{{ opsuser }}
-    dest=/home/{{ opsuser }}/.ssh/id_rsa
-    owner={{ opsuser }}
-    mode=0600
+- name: generate ssh key pair
+  shell: ssh-keygen -t rsa -N "" -f /home/{{ opsuser }}/.ssh/id_rsa
+  args:
+    creates: /home/{{ opsuser }}/.ssh/id_rsa
+  become: yes
+  become_user: "{{ opsuser }}"
+  when: "'master' in group_names"
 
-- name: set public key
+- name: fetch ssh key pair
+  fetch:
+    src: "{{ item }}"
+    dest: tmp/
+    flat: yes
+  with_items:
+    - /home/{{ opsuser }}/.ssh/id_rsa
+    - /home/{{ opsuser }}/.ssh/id_rsa.pub
+  when: "'master' in group_names"
+
+- name: put ssh key
   copy:
-    src=tmp/{{ opsuser }}.pub
-    dest=/home/{{ opsuser }}/.ssh/id_rsa.pub
-    owner={{ opsuser }}
+    src: tmp/id_rsa
+    dest: /home/{{ opsuser }}/.ssh/id_rsa
+    owner: "{{ opsuser }}"
+    mode: 0600
+
+- name: put ssh public key
+  copy:
+    src: tmp/id_rsa.pub
+    dest: /home/{{ opsuser }}/.ssh/id_rsa.pub
+    owner: "{{ opsuser }}"
+
+- name: get ssh public key
+  shell: cat /home/{{ opsuser }}/.ssh/id_rsa.pub
+  register: authorized_key
+  changed_when: False
+
+- name: set authorized_key
+  authorized_key:
+    user: "{{ opsuser }}"
+    key: "{{ authorized_key.stdout }}"
 
 - name: create zone_sync directory
   file:

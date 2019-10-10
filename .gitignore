@@ -1,7 +1,8 @@
 .vagrant
 inventories/production
 vars/production.yml
-tmp
+tmp/*
+!tmp/.keep
 
 /.bundle
 /hosts
